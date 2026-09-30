@@ -4,7 +4,7 @@ go 1.27.1
 
 require (
 	github.com/crgimenes/filo v0.0.23
-	github.com/crgimenes/glaze v0.0.54
+	github.com/crgimenes/glaze v0.0.61
 	github.com/crgimenes/minigui v0.1.11
 	github.com/crgimenes/native v0.1.11
 	github.com/hajimehoshi/ebiten/v2 v2.10.3

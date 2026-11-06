@@ -1,7 +1,7 @@
 github.com/crgimenes/filo v0.1.1 h1:ynpj6/LlWHJd90SHP1aMkm/iIiaYgZVAeBB3sLsIw3g=
 github.com/crgimenes/filo v0.1.1/go.mod h1:w/0fYBt6HUfzDD3VbsnRooN3RyxctJDb/St5WtvjZik=
-github.com/crgimenes/glaze v0.0.82 h1:/jploUMUXdYhXEkkidSYJSzn7M29o+Kt63cmkN4CCME=
-github.com/crgimenes/glaze v0.0.82/go.mod h1:41rd4sKUekbjd2w9vUSKO4JBf0WKdR1wd+gud5S/agk=
+github.com/crgimenes/glaze v0.0.83 h1:zX1XlyEEce6DQ8vJc8jABcAUamOOhPYVeY7/XTQtC18=
+github.com/crgimenes/glaze v0.0.83/go.mod h1:41rd4sKUekbjd2w9vUSKO4JBf0WKdR1wd+gud5S/agk=
 github.com/crgimenes/minigui v0.1.13 h1:VnD4ykZNpGNnZfHafgULkZmay3HybnHUI9z1L7+dFho=
 github.com/crgimenes/minigui v0.1.13/go.mod h1:nkuOmV1yK2hHf0K0HNEg5FXNHkgDxPjfw4ASpeiITQ4=
 github.com/crgimenes/native v0.1.18 h1:zn0fFlskRWue3UOKhrhuedt07j+XX7wWceNRHEWiTGM=

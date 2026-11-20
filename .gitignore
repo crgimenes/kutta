@@ -48,6 +48,7 @@ release.sh
 
 *.png
 !assets/*.png
+!cmd/kutta/icon.png
 
 TODO.md
 

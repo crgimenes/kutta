@@ -187,9 +187,11 @@ type Game struct {
 	controlDeg    float64 // live deflection of the scene's Control object, in degrees
 	mode          fieldMode
 	paused        bool
-	streamlines   bool // overlay integrated streamlines
-	glow          bool // additive bloom on the smoke
-	showParticles bool // draw the smoke tracers at all; off isolates streamlines with a clean background
+	streamlines   bool        // overlay integrated streamlines
+	streamPath    vector.Path // cached streamline geometry; rebuilt every streamEvery draws (#47)
+	streamAge     int         // draws since streamPath was last integrated
+	glow          bool        // additive bloom on the smoke
+	showParticles bool        // draw the smoke tracers at all; off isolates streamlines with a clean background
 	// clean hides every panel/control, drawing only the flow image -- exactly
 	// what -hidecontrols has always meant, on its own. kiosk adds the rest of
 	// kiosk mode on top of that: a trimmed menu bar and blocking
@@ -723,7 +725,7 @@ func (g *Game) menuItems() []menu.Item {
 			{Title: mark(g.mode == modeVorticity) + "Vorticity", OnClick: act(func() { g.mode = modeVorticity })},
 			{Title: mark(g.mode == modePressure) + "Pressure", OnClick: act(func() { g.mode = modePressure })},
 			{Separator: true},
-			{Title: mark(g.streamlines) + "Streamlines", OnClick: act(func() { g.streamlines = !g.streamlines })},
+			{Title: mark(g.streamlines) + "Streamlines", OnClick: act(g.toggleStreamlines)},
 			{Title: mark(g.glow) + "Glow", OnClick: act(func() { g.glow = !g.glow })},
 			{Title: mark(g.showParticles) + "Particles", OnClick: act(func() { g.showParticles = !g.showParticles })},
 			{Title: mark(g.showLabel) + "Label", OnClick: act(func() { g.showLabel = !g.showLabel })},
@@ -1047,7 +1049,7 @@ func (g *Game) handleInput() {
 				g.saveScene() // Cmd+S: write to the current file
 			}
 		case !meta:
-			g.streamlines = !g.streamlines
+			g.toggleStreamlines()
 		}
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyG) {
@@ -1519,12 +1521,37 @@ func (g *Game) drawSmoke(dst *ebiten.Image) {
 // drawStreamlines overlays instantaneous streamlines, integrated from a column
 // of seeds near the inlet by stepping a fixed arc length along the local
 // velocity (RK2 midpoint). The whole set is one batched path, so it is a single
-// draw call regardless of length.
+// draw call regardless of length. The path is re-integrated only every
+// streamEvery draws: the flow changes gradually, so up to two frames of
+// staleness is invisible, and the RK2 sweep (~22k velocity samples) was the
+// CPU half of the per-frame cost measured on a Pi 5 in #47.
 func (g *Game) drawStreamlines(dst *ebiten.Image) {
+	const streamEvery = 3
+	if g.streamAge%streamEvery == 0 {
+		g.integrateStreamlines()
+	}
+	g.streamAge++
+	op := &vector.StrokeOptions{Width: 1, LineJoin: vector.LineJoinRound}
+	dop := &vector.DrawPathOptions{AntiAlias: true}
+	dop.ColorScale.ScaleWithColor(color.RGBA{0xde, 0xe8, 0xff, 0xc0})
+	vector.StrokePath(dst, &g.streamPath, op, dop)
+}
+
+// toggleStreamlines flips the overlay and forces a fresh integration on the
+// first draw back on -- the cached path may be minutes stale by then.
+func (g *Game) toggleStreamlines() {
+	g.streamlines = !g.streamlines
+	g.streamAge = 0
+}
+
+// integrateStreamlines rebuilds the cached streamline path from the current
+// velocity field.
+func (g *Game) integrateStreamlines() {
 	const nLines = 28
 	const maxSteps = 400
 	const ds = 1.5 // grid cells advanced per step
-	var path vector.Path
+	path := &g.streamPath
+	path.Reset()
 	for k := range nLines {
 		y := (float64(k) + 0.5) / nLines * float64(gridH)
 		x := 2.0
@@ -1555,10 +1582,6 @@ func (g *Game) drawStreamlines(dst *ebiten.Image) {
 			path.LineTo(lx, ly)
 		}
 	}
-	op := &vector.StrokeOptions{Width: 1, LineJoin: vector.LineJoinRound}
-	dop := &vector.DrawPathOptions{AntiAlias: true}
-	dop.ColorScale.ScaleWithColor(color.RGBA{0xde, 0xe8, 0xff, 0xc0})
-	vector.StrokePath(dst, &path, op, dop)
 }
 
 // gridToScreen maps a grid-space point (y up) to viewport pixels (y down).

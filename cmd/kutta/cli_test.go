@@ -10,14 +10,14 @@ import (
 // disturbing the current scene.
 func TestLoadSceneFile(t *testing.T) {
 	g := simGame()
-	err := g.loadSceneFile("examples/flap.afoil")
+	err := g.loadSceneFile("../../examples/flap.afoil")
 	if err != nil {
 		t.Fatalf("loadSceneFile: %v", err)
 	}
 	if g.scn == nil {
 		t.Fatal("scene not set")
 	}
-	if g.savePath != "examples/flap.afoil" {
+	if g.savePath != "../../examples/flap.afoil" {
 		t.Fatalf("savePath = %q, want the loaded file", g.savePath)
 	}
 	prev := g.scn

@@ -99,7 +99,7 @@ chmod +x kutta-linux-amd64
 With Go installed:
 
 ```bash
-go run .
+go run ./cmd/kutta
 ```
 
 On macOS and Windows there is nothing else to install. On **Linux**, Ebitengine

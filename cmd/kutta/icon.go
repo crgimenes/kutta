@@ -13,7 +13,7 @@ import (
 // icon on Windows and Linux (macOS uses the .app bundle icon instead). It is a
 // 256px reduction of the assets/kutta.png master (the base for all icons).
 //
-//go:embed assets/icon.png
+//go:embed icon.png
 var iconPNG []byte
 
 // setWindowIcon decodes the embedded icon and installs it. A decode failure is

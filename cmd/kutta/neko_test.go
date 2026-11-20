@@ -65,7 +65,7 @@ func TestNekoScene(t *testing.T) {
 // TestNekoFileMatches guards the examples/neko.afoil demo against drifting from
 // the Go nekoScene (the easter-egg source).
 func TestNekoFileMatches(t *testing.T) {
-	b, err := os.ReadFile("examples/neko.afoil")
+	b, err := os.ReadFile("../../examples/neko.afoil")
 	if err != nil {
 		t.Fatal(err)
 	}

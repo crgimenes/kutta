@@ -62,6 +62,7 @@ func TestSVGImportScene(t *testing.T) {
 // TestCarExampleLoads guards examples/car.afoil (and the svg source it
 // references) the way neko_test.go guards the neko demo.
 func TestCarExampleLoads(t *testing.T) {
+	t.Chdir("../..") // car.afoil names its svg relative to the repository root
 	b, err := os.ReadFile("examples/car.afoil")
 	if err != nil {
 		t.Fatal(err)

@@ -63,6 +63,6 @@ for arch in amd64 arm64; do
   out="$OUT_DIR/${BINARY_NAME}-windows-${arch}.exe"
   echo "Building windows/${arch}: $(basename "$out")"
   env GOWORK=off GOOS=windows GOARCH="$arch" CGO_ENABLED=0 \
-    go build -trimpath -ldflags="-s -w" -o "$out" .
+    go build -trimpath -ldflags="-s -w" -o "$out" ./cmd/kutta
   verify_pinned_deps "$out"
 done

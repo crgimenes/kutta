@@ -34,7 +34,7 @@ jobs:
         env:
           GOARCH: wasm
           GOOS: js
-        run: go build -trimpath -ldflags="-s -w" -o web/kutta.wasm .
+        run: go build -trimpath -ldflags="-s -w" -o web/kutta.wasm ./cmd/kutta
 
       # wasm_exec.js is the Go runtime shim and has to match the toolchain that
       # produced the module, so it gets copied from this GOROOT rather than
